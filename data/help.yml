@@ -1,0 +1,250 @@
+aws:
+  bootstrap:
+    desc: >
+      Bootstraps an AWS cluster with 2 new subnets and an Auto Scaling group to
+      launch instances into. The cluster needs to be set up beforehand with the
+      CloudFormation template in podbay/aux/aws/cloudformation/base.template
+    options:
+      - cluster
+    params:
+      ami:
+        required: true
+        desc: The ID of the AMI to use to launch your EC2 instances.
+      role:
+        required: true
+        desc: The role of the group. (server/client)
+      size:
+        default:
+        desc: "The # of EC2 instances that should be running in the group."
+      instance_type:
+        default: t2-small
+        desc: The instance type of the EC2 instance.
+      dmz:
+        default: false
+        desc: Whether the instances will reside in the DMZ. (true/false)
+      discovery_mode:
+        desc: The instance discovery mode strategy.
+      key_pair:
+        desc: The name of the key pair.
+      modules.static_services[]:
+        desc: >
+          A comma-separated list of the services to run in the bootstrapped
+          group.
+      elb.ssl_certificate_arn:
+        desc: The AWS SSL Certificate ARN.
+      elb.target:
+        desc: >
+          Specify a path to perform an HTTP health check on.  If not
+          specified, a TCP health check will be performed against port 3001.
+      elb.interval:
+        default: 30
+        desc: >
+          The approximate interval, in seconds, between health checks of an
+          individual instance.
+      elb.timeout:
+        default: 3
+        desc: >
+          The amount of time, in seconds, during which no response means a
+          failed health check.
+      elb.healthy_threshold:
+        default: 2
+        desc: >
+          The number of consecutive health checks successes required before
+          moving the instance to the Healthy state.
+      elb.unhealthy_threshold:
+        default: 2
+        desc: >
+          The number of consecutive health check failures required before moving
+          the instance to the Unhealthy state.
+  teardown:
+    desc: Tears down an existing Podbay group
+    args:
+      - group_name
+    options:
+      - cluster
+  deploy:
+    desc: >
+      Deploy a new AMI to a Podbay group. This will gracefully update the group
+      to use a new ASG with the new AMI.
+    options:
+      - cluster
+    params:
+      ami:
+        required: true
+        desc: The ID of the AMI to use to launch your EC2 instances.
+      group:
+        required: true
+        desc: The id of the Podbay group (with "gr-" prefix)
+      instance_type:
+        desc: The instance type of the EC2 instance.
+  db_setup:
+    desc: >
+      Create an RDS database that will be linked to a Podbay group. The database
+      will only be accessible from the specified group
+    options:
+      - cluster
+    params:
+      engine:
+        required: true
+        desc: The name of the db engine to be used for this instance.
+      allocated_storage:
+        required: true
+        desc: >
+          The amount of storage (in gigabytes) to be initially allocated for the
+          database instance.
+      instance_class:
+        default: db.m3.medium
+        desc: The compute and memory capacity of the DB instance.
+      username:
+        required: true
+        desc: The name of master user for the client DB instance.
+      password:
+        required: true
+        desc: The password for the master database user.
+      maintenance_window:
+        required: true
+        desc: >
+          The weekly time range during which system maintenance can occur, in
+          UTC. Format: ddd:hh24:mi-ddd:hh24:mi. Valid Days: Mon, Tue, Wed, Thu,
+          Fri, Sat, Sun
+      backup_retention_period:
+        default: 7
+        desc: The number of days for which automated backups are retained
+      multi_az:
+        default: true
+        desc: Specifies if the DB instance is a Multi-AZ deployment.
+      engine_version:
+        required: true
+        desc: The version number of the database engine to use.
+      license_model:
+        required: true
+        desc: >
+          License model information for this DB instance. Valid values:
+          license-included | bring-your-own-license | general-public-license
+      group:
+        required: true
+        desc: The id of the Podbay group (with "gr-" prefix)
+      backup_window:
+        required: true
+        desc: >
+          The daily time range (in UTC) during which automated backups are
+          created. Format: hh24:mi-hh24:mi
+  cache_setup:
+    desc: >
+      Create an ElastiCache instance that will be linked to a Podbay group. The
+      cache will only be accessible from the specified group
+    options:
+      - cluster
+    params:
+      engine:
+        required: true
+        desc: The name of the cache engine to be used for this instance.
+      engine_version:
+        required: true
+        desc: The version number of the database engine to use.
+      cache_node_type:
+        default: cache.m3.medium
+        desc: The compute and memory capacity of the cache node.
+      snapshot_retention_limit:
+        desc: >
+          The number of days for which ElastiCache will retain automatic
+          snapshots before deleting them.
+        default: 14
+      snapshot_window:
+        required: true
+        desc: >
+          The daily time range (in UTC) during which ElastiCache will begin
+          taking a daily snapshot of your node group. Example: 05:00-09:00
+      group:
+        required: true
+        desc: The id of the Podbay group (with "gr-" prefix)
+service:
+  define:
+    desc: >
+      Create or update Podbay service definitions. For the check parameters,
+      see <https://www.consul.io/docs/agent/checks.html> for details.
+    options:
+      - service
+    params:
+      size:
+        desc: Size of the Docker container (0-9).
+        default: 0
+      image.name:
+        desc: Name of the docker image.
+      image.tag:
+        desc: The tag of the image to launch.
+      image.src:
+        desc: >
+          The source URL of the image tars. If not specified, will get image
+          from 'docker pull'.  (e.g., s3://image-bucket-123456)
+      image.sha256:
+        desc: >
+          The sha256 to verify the image tar. Only active when 'image.src'
+          is specified.
+      ingress_whitelist:
+        desc: Ingress cidrs to whitelist.
+      egress_whitelist:
+        desc: Egress cidrs to whitelist.
+      host:
+        desc: >
+          The hostname by which external requests will be routed to this
+          service. (e.g., api.mysite.com)
+      tmp_space:
+        desc: The size in MB of the /tmp/ mount needed.
+        default: 4
+      check.http:
+        desc: The HTTP path to check (e.g., "/status").
+      check.tcp:
+        desc: Whether to use a TCP check. (e.g., "true" or "false").
+      check.script:
+        desc: >
+          The path to a health check script to run
+          (e.g., "/usr/local/bin/health_check.rb").
+      check.interval:
+        desc: How often to run the check in seconds (e.g., "10s" or "10").
+      check.ttl:
+        desc: Specify a TTL check in seconds (e.g., "30s" or "30").
+
+
+  config:
+    desc: >
+      Used to retrieve/update a service's environment variables. Environment
+      variable names can be specified as arguments to retrieve specific values.
+      If the name is preceded by a "-" (e.g., "-ENV") the variable will be
+      deleted. Variables can be defined by using "=" (e.g., "ENV=value").
+    options:
+      - service
+    args:
+      - RETRIEVE
+      - "-DELETE"
+    params:
+      ENV:
+        default: value
+  restart:
+    desc: Used to restart the service
+    options:
+      - service
+  definition:
+    desc: Prints out the current definition of the service
+    options:
+      - service
+daemon:
+  execute:
+    desc: >
+      Starts the Podbay Daemon along with any necessary modules. The daemon is
+      responsible for monitoring and restarting any module processes
+    params:
+      config:
+        desc: Path to the Podbay config file
+        default: /etc/podbay.conf
+  launch:
+    desc: >
+      Sets up the necessary environment for the service and launches it in a
+      Docker container. It uses the values set by the service:define and
+      service:config commands.
+    args:
+      - service
+version:
+  execute:
+    desc: >
+      Outputs the version of podbay installed.

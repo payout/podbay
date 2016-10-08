@@ -1,0 +1,52 @@
+global
+        log 127.0.0.1  local0
+        chroot /var/lib/haproxy
+        user haproxy
+        group haproxy
+        daemon
+
+defaults
+        log     global
+        mode    http
+        option  httplog
+        option  dontlognull
+        contimeout 5000
+        clitimeout 50000
+        srvtimeout 50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
+frontend router
+        bind 192.168.100.1:80
+        <%- service_details.each do |name, details| -%>
+        <%- unless details[:addresses].empty? -%>
+        acl is_<%= name %> hdr(host) -i <%= details[:host] %>
+        <%- end -%>
+        <%- end -%>
+
+        <%- service_details.each do |name, details| -%>
+        <%- unless details[:addresses].empty? -%>
+        use_backend <%= name %> if is_<%= name %>
+        <%- end -%>
+        <%- end -%>
+
+        default_backend default_error
+
+<%- service_details.each do |name, details| -%>
+<%- unless details.empty? -%>
+backend <%= name %>
+        balance roundrobin
+        option httpclose
+        <%- details[:addresses].shuffle.each do |address| -%>
+        server <%= address[:id] %> <%= address[:ip] %>:<%= address[:port] %> check
+        <%- end -%>
+<%- end -%>
+<%- end -%>
+
+backend default_error
+        errorfile 503 /etc/haproxy/errors/503.http

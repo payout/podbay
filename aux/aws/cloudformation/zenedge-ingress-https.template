@@ -1,0 +1,1064 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Adds ZenEdge HTTPS (port 443) rules to a security group",
+
+  "Parameters": {
+    "SecurityGroupID": {
+      "Description": "ID for the security group to add the HTTPS rules to",
+      "Type": "String"
+    }
+  },
+
+  "Resources": {
+    "ZenEdgeIngressHTTP1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "107.6.43.68/32"
+      }
+    },
+    "ZenEdgeIngressHTTP2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "192.157.18.0/24"
+      }
+    },
+    "ZenEdgeIngressHTTP3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "192.157.19.0/24"
+      }
+    },
+    "ZenEdgeIngressHTTP4": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "205.147.105.145/32"
+      }
+    },
+    "ZenEdgeIngressHTTP5": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "205.147.105.237/32"
+      }
+    },
+    "ZenEdgeIngressHTTP6": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.0.101.155/32"
+      }
+    },
+    "ZenEdgeIngressHTTP7": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.0.124.194/32"
+      }
+    },
+    "ZenEdgeIngressHTTP8": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.0.235.19/32"
+      }
+    },
+    "ZenEdgeIngressHTTP9": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.1.10.255/32"
+      }
+    },
+    "ZenEdgeIngressHTTP10": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.1.101.154/32"
+      }
+    },
+    "ZenEdgeIngressHTTP11": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.17.0.17/32"
+      }
+    },
+    "ZenEdgeIngressHTTP12": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.17.214.105/32"
+      }
+    },
+    "ZenEdgeIngressHTTP13": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.17.239.195/32"
+      }
+    },
+    "ZenEdgeIngressHTTP14": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.139.144/32"
+      }
+    },
+    "ZenEdgeIngressHTTP15": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.169.22/32"
+      }
+    },
+    "ZenEdgeIngressHTTP16": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.172.54/32"
+      }
+    },
+    "ZenEdgeIngressHTTP17": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.178.246/32"
+      }
+    },
+    "ZenEdgeIngressHTTP18": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.211.15/32"
+      }
+    },
+    "ZenEdgeIngressHTTP19": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.211.70/32"
+      }
+    },
+    "ZenEdgeIngressHTTP20": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.2.221.152/32"
+      }
+    },
+    "ZenEdgeIngressHTTP21": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.21.39.226/32"
+      }
+    },
+    "ZenEdgeIngressHTTP22": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.22.121.129/32"
+      }
+    },
+    "ZenEdgeIngressHTTP23": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.24.248.45/32"
+      }
+    },
+    "ZenEdgeIngressHTTP24": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.25.102.18/32"
+      }
+    },
+    "ZenEdgeIngressHTTP25": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.28.196.122/32"
+      }
+    },
+    "ZenEdgeIngressHTTP26": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.28.32.104/32"
+      }
+    },
+    "ZenEdgeIngressHTTP27": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.28.88.202/32"
+      }
+    },
+    "ZenEdgeIngressHTTP28": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.101.97/32"
+      }
+    },
+    "ZenEdgeIngressHTTP29": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.11.122/32"
+      }
+    },
+    "ZenEdgeIngressHTTP30": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.13.176/32"
+      }
+    },
+    "ZenEdgeIngressHTTP31": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.13.254/32"
+      }
+    },
+    "ZenEdgeIngressHTTP32": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.15.88/32"
+      }
+    },
+    "ZenEdgeIngressHTTP33": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.5.12/32"
+      }
+    },
+    "ZenEdgeIngressHTTP34": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.53.241/32"
+      }
+    },
+    "ZenEdgeIngressHTTP35": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.29.89.207/32"
+      }
+    },
+    "ZenEdgeIngressHTTP36": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.102.87/32"
+      }
+    },
+    "ZenEdgeIngressHTTP37": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.110.223/32"
+      }
+    },
+    "ZenEdgeIngressHTTP38": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.123.200/32"
+      }
+    },
+    "ZenEdgeIngressHTTP39": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.126.122/32"
+      }
+    },
+    "ZenEdgeIngressHTTP40": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.133.10/32"
+      }
+    },
+    "ZenEdgeIngressHTTP41": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.135.199/32"
+      }
+    },
+    "ZenEdgeIngressHTTP42": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.135.213/32"
+      }
+    },
+    "ZenEdgeIngressHTTP43": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.167.4/32"
+      }
+    },
+    "ZenEdgeIngressHTTP44": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.90.148/32"
+      }
+    },
+    "ZenEdgeIngressHTTP45": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.3.97.229/32"
+      }
+    },
+    "ZenEdgeIngressHTTP46": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.4.103.52/32"
+      }
+    },
+    "ZenEdgeIngressHTTP47": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.4.115.41/32"
+      }
+    },
+    "ZenEdgeIngressHTTP48": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.4.179.88/32"
+      }
+    },
+    "ZenEdgeIngressHTTP49": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.49.113.112/32"
+      }
+    },
+    "ZenEdgeIngressHTTP50": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.5.126.2/32"
+      }
+    },
+    "ZenEdgeIngressHTTP51": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.6.153.248/32"
+      }
+    },
+    "ZenEdgeIngressHTTP52": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.6.85.195/32"
+      }
+    },
+    "ZenEdgeIngressHTTP53": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.7.103.204/32"
+      }
+    },
+    "ZenEdgeIngressHTTP54": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.7.163.84/32"
+      }
+    },
+    "ZenEdgeIngressHTTP55": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.74.81.57/32"
+      }
+    },
+    "ZenEdgeIngressHTTP56": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.76.194.87/32"
+      }
+    },
+    "ZenEdgeIngressHTTP57": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.76.243.93/32"
+      }
+    },
+    "ZenEdgeIngressHTTP58": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.77.2.6/32"
+      }
+    },
+    "ZenEdgeIngressHTTP59": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.8.210.194/32"
+      }
+    },
+    "ZenEdgeIngressHTTP60": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.8.59.82/32"
+      }
+    },
+    "ZenEdgeIngressHTTP61": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.8.66.223/32"
+      }
+    },
+    "ZenEdgeIngressHTTP62": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.8.72.1/32"
+      }
+    },
+    "ZenEdgeIngressHTTP63": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.8.8.170/32"
+      }
+    },
+    "ZenEdgeIngressHTTP64": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.9.19.95/32"
+      }
+    },
+    "ZenEdgeIngressHTTP65": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.9.2.89/32"
+      }
+    },
+    "ZenEdgeIngressHTTP66": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.9.21.101/32"
+      }
+    },
+    "ZenEdgeIngressHTTP67": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.9.21.160/32"
+      }
+    },
+    "ZenEdgeIngressHTTP68": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.149.187.251/32"
+      }
+    },
+    "ZenEdgeIngressHTTP69": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.152.44.225/32"
+      }
+    },
+    "ZenEdgeIngressHTTP70": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.169.73.21/32"
+      }
+    },
+    "ZenEdgeIngressHTTP71": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.174.105.46/32"
+      }
+    },
+    "ZenEdgeIngressHTTP72": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.174.141.252/32"
+      }
+    },
+    "ZenEdgeIngressHTTP73": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.174.158.231/32"
+      }
+    },
+    "ZenEdgeIngressHTTP74": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.179.171.22/32"
+      }
+    },
+    "ZenEdgeIngressHTTP75": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.183.107.148/32"
+      }
+    },
+    "ZenEdgeIngressHTTP76": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.207.0.197/32"
+      }
+    },
+    "ZenEdgeIngressHTTP77": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.64.74.187/32"
+      }
+    },
+    "ZenEdgeIngressHTTP78": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.65.1.119/32"
+      }
+    },
+    "ZenEdgeIngressHTTP79": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.67.102.40/32"
+      }
+    },
+    "ZenEdgeIngressHTTP80": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.67.24.149/32"
+      }
+    },
+    "ZenEdgeIngressHTTP81": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.67.97.5/32"
+      }
+    },
+    "ZenEdgeIngressHTTP82": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.68.190.72/32"
+      }
+    },
+    "ZenEdgeIngressHTTP83": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.84.70.229/32"
+      }
+    },
+    "ZenEdgeIngressHTTP84": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.88.27.137/32"
+      }
+    },
+    "ZenEdgeIngressHTTP85": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.93.126.109/32"
+      }
+    },
+    "ZenEdgeIngressHTTP86": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "54.94.144.82/32"
+      }
+    },
+    "ZenEdgeIngressHTTP87": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "64.69.71.145/32"
+      }
+    },
+    "ZenEdgeIngressHTTP88": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "64.69.71.201/32"
+      }
+    },
+    "ZenEdgeIngressHTTP89": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "65.39.180.191/32"
+      }
+    },
+    "ZenEdgeIngressHTTP90": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "65.39.180.192/32"
+      }
+    },
+    "ZenEdgeIngressHTTP91": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "65.39.180.199/32"
+      }
+    },
+    "ZenEdgeIngressHTTP92": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "65.39.180.202/32"
+      }
+    },
+    "ZenEdgeIngressHTTP93": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "66.155.100.133/32"
+      }
+    },
+    "ZenEdgeIngressHTTP94": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "66.155.100.164/32"
+      }
+    },
+    "ZenEdgeIngressHTTP95": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "66.155.100.170/32"
+      }
+    },
+    "ZenEdgeIngressHTTP96": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "66.155.100.181/32"
+      }
+    },
+    "ZenEdgeIngressHTTP97": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "66.155.100.182/32"
+      }
+    },
+    "ZenEdgeIngressHTTP98": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.30.255.63/32"
+      }
+    },
+    "ZenEdgeIngressHTTP99": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.50.123.164/32"
+      }
+    },
+    "ZenEdgeIngressHTTP100": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.18.184.244/32"
+      }
+    },
+    "ZenEdgeIngressHTTP101": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.48.8.158/32"
+      }
+    },
+    "ZenEdgeIngressHTTP102": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "52.70.80.31/32"
+      }
+    },
+    "ZenEdgeIngressHTTP103": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "205.147.95.0/24"
+      }
+    },
+    "ZenEdgeIngressHTTP104": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "69.28.224.195/32"
+      }
+    },
+    "ZenEdgeIngressHTTP105": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "SecurityGroupID" },
+        "IpProtocol": "tcp",
+        "FromPort": "443",
+        "ToPort": "443",
+        "CidrIp": "65.39.184.19/32"
+      }
+    }
+  }
+}

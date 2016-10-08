@@ -1,0 +1,25 @@
+---
+engines:
+  bundler-audit:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - ruby
+    exclude_fingerprints:
+      - ea804275f0262ee06b8b56806b111ca2
+      # AWS SDK has similar methods for database and cache setup
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+    exclude_fingerprints:
+      - 577ad0c2fad082df2b09eb6bc424fb55 # Suppressing Diplomat::Timeout error
+ratings:
+  paths:
+    - Gemfile.lock
+    - "**.rb"
+exclude_paths:
+  - spec/**/*
+  - ".rubocop.yml"

@@ -1,0 +1,748 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Base CF template for Podbay",
+
+  "Parameters": {
+    "VpcCidr": {
+      "Description": "CIDR address for the VPC to be created.",
+      "Type": "String",
+      "Default": "10.0.0.0/16"
+    },
+    "NATPublicSubnet1Cidr": {
+      "Description": "Address range for a public subnet to be created in AZ1.",
+      "Type": "String",
+      "Default": "10.0.0.0/24"
+    },
+    "NATPublicSubnet2Cidr": {
+      "Description": "Address range for a public subnet to be created in AZ2.",
+      "Type": "String",
+      "Default": "10.0.2.0/24"
+    },
+    "AvailabilityZone1": {
+      "Description": "First AZ to use for PublicSubnet1/PrivateSubnet1.",
+      "Type": "String",
+      "Default": "us-east-1c"
+    },
+    "AvailabilityZone2": {
+      "Description": "Second AZ to use for PublicSubnet2/PrivateSubnet2.",
+      "Type": "String",
+      "Default": "us-east-1e"
+    },
+    "AdminPath": {
+      "Description": "The path within this account to the user/role that will administer the cluster (e.g., \"role/admin\", \"user/bob\"). This will be used to set the needed permissions to administer certain elements (e.g., KMS key). At a minimum, this must include the user who is creating the stack.",
+      "Type": "String",
+      "Default": "role/sso-admin"
+    },
+  },
+
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock":  { "Ref": "VpcCidr" },
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          {
+            "Key": "podbay:cluster",
+            "Value": { "Ref": "AWS::StackName" }
+          },
+          {
+            "Key": "az1",
+            "Value": { "Ref": "AvailabilityZone1" }
+          },
+          {
+            "Key": "az2",
+            "Value": { "Ref": "AvailabilityZone2" }
+          }
+        ]
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          { "Key": "Application", "Value": { "Ref": "AWS::StackName" } },
+          { "Key": "Network", "Value": "Public" }
+        ]
+      }
+    },
+    "VPCGatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "InternetGatewayId": { "Ref": "InternetGateway" }
+      }
+    },
+    "NATPublicSubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": { "Ref": "NATPublicSubnet1Cidr" },
+        "AvailabilityZone": { "Ref": "AvailabilityZone1" },
+        "MapPublicIpOnLaunch": "true",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "Name", "Value": "nat-subnet-1" }
+        ]
+      }
+    },
+    "NATPublicSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": { "Ref": "NATPublicSubnet2Cidr" },
+        "AvailabilityZone": { "Ref": "AvailabilityZone2" },
+        "MapPublicIpOnLaunch": "true",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "Name", "Value": "nat-subnet-2" }
+        ]
+      }
+    },
+    "NAT1": {
+      "DependsOn": "VPCGatewayAttachment",
+      "Type" : "AWS::EC2::NatGateway",
+      "Properties" : {
+        "AllocationId" : { "Fn::GetAtt" : ["EIP1", "AllocationId"]},
+        "SubnetId" : { "Ref": "NATPublicSubnet1" }
+      }
+    },
+    "NAT2": {
+      "DependsOn": "VPCGatewayAttachment",
+      "Type" : "AWS::EC2::NatGateway",
+      "Properties" : {
+        "AllocationId" : { "Fn::GetAtt" : ["EIP2", "AllocationId"]},
+        "SubnetId" : { "Ref": "NATPublicSubnet2" }
+      }
+    },
+    "EIP1": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc"
+      }
+    },
+    "EIP2": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc"
+      }
+    },
+    "NetworkAcl": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" }
+      }
+    },
+    "AclEntry1": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "CidrBlock": "0.0.0.0/0",
+        "Egress": "true",
+        "Protocol": "-1",
+        "RuleAction": "allow",
+        "RuleNumber": "100",
+        "NetworkAclId": { "Ref": "NetworkAcl" }
+      }
+    },
+    "AclEntry2": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": "-1",
+        "RuleAction": "allow",
+        "RuleNumber": "100",
+        "NetworkAclId": { "Ref": "NetworkAcl" }
+      }
+    },
+    "SubnetAcl1": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NetworkAcl" },
+        "SubnetId": { "Ref": "NATPublicSubnet1" }
+      }
+    },
+    "SubnetAcl2": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": { "Ref": "NetworkAcl" },
+        "SubnetId": { "Ref": "NATPublicSubnet2" }
+      }
+    },
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "Name", "Value": "PublicRouteTable" }
+        ]
+      }
+    },
+    "PrivateRouteTable1": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "AvailabilityZone", "Value": { "Ref": "AvailabilityZone1" } }
+        ]
+      }
+    },
+    "PrivateRouteTable2": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [
+          { "Key": "AvailabilityZone", "Value": { "Ref": "AvailabilityZone2" } }
+        ]
+      }
+    },
+    "PublicRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": { "Ref": "PublicRouteTable" },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": { "Ref": "InternetGateway" }
+      },
+      "DependsOn": "VPCGatewayAttachment"
+    },
+    "NAT1Route": {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable1" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : { "Ref" : "NAT1" }
+      }
+    },
+    "NAT2Route": {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PrivateRouteTable2" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : { "Ref" : "NAT2" }
+      }
+    },
+    "NATPublicSubnet1RTAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {"Ref": "PublicRouteTable" },
+        "SubnetId": {"Ref": "NATPublicSubnet1" }
+      }
+    },
+    "NATPublicSubnet2RTAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": { "Ref": "PublicRouteTable" },
+        "SubnetId": { "Ref": "NATPublicSubnet2" }
+      }
+    },
+    "DHCPOptions": {
+      "Type": "AWS::EC2::DHCPOptions",
+      "Properties": {
+        "DomainName": "ec2.internal",
+        "DomainNameServers": [ "AmazonProvidedDNS" ]
+      }
+    },
+    "DHCPAssoc": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": { "Ref": "VPC" },
+        "DhcpOptionsId": { "Ref": "DHCPOptions" }
+      }
+    },
+    "DMZELBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "The security group configuration for the DMZ ELBs",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [{ "Key": "Name", "Value": "DMZELBSecurityGroup" }]
+      }
+    },
+    "DMZELBSecurityEgressDMZClient": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": { "Ref": "DMZELBSecurityGroup" },
+        "DestinationSecurityGroupId": { "Ref": "DMZClientSecurityGroup" },
+        "FromPort": "3001",
+        "ToPort": "3001",
+        "IpProtocol": "tcp"
+      }
+    },
+    "DMZClientSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "The security group configuration for the DMZ clients",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [{ "Key": "Name", "Value": "DMZClientSecurityGroup" }]
+      }
+    },
+    "DMZClientSecurityIngressHttp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "DMZClientSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "3001",
+        "ToPort": "3001",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "DMZClientSecurityIngressConsulSerfUdp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "DMZClientSecurityGroup" },
+        "IpProtocol": "udp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "DMZClientSecurityIngressConsulSerfTcp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "DMZClientSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "DMZClientSecurityEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": { "Ref": "DMZClientSecurityGroup" },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "ClientSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "The security group configuration for the clients",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [{ "Key": "Name", "Value": "ClientSecurityGroup" }]
+      }
+    },
+    "ClientSecurityIngressHttp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ClientSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "3001",
+        "ToPort": "3999",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ClientSecurityIngressConsulSerfUdp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ClientSecurityGroup" },
+        "IpProtocol": "udp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ClientSecurityIngressConsulSerfTcp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ClientSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ClientSecurityEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": { "Ref": "ClientSecurityGroup" },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "ServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "The security group configuration for the servers",
+        "VpcId": { "Ref": "VPC" },
+        "Tags": [{ "Key": "Name", "Value": "ServerSecurityGroup" }]
+      }
+    },
+    "ServerSecurityIngressConsulRPC": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8300",
+        "ToPort": "8300",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityIngressConsulSerfTcp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityIngressConsulSerfUdp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "udp",
+        "FromPort": "8301",
+        "ToPort": "8301",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityIngressConsulWanSerfTCP": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "8302",
+        "ToPort": "8302",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityIngressConsulWanSerfUdp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "udp",
+        "FromPort": "8302",
+        "ToPort": "8302",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityIngressPodbayTcp": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "7329",
+        "ToPort": "7329",
+        "CidrIp": { "Ref": "VpcCidr" }
+      }
+    },
+    "ServerSecurityEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": { "Ref": "ServerSecurityGroup" },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "PodbayBucket": {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "AccessControl" : "Private"
+      }
+    },
+    "PodbayBucketClientPolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:*"],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" }, "/client/*"]] }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" }, "/all/*"]] }
+              ]
+            },
+            {
+              "Action": ["s3:ListBucket"],
+              "Effect": "Allow",
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" } ]] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "PodbayBucketServerPolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": ["s3:*"],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" }, "/server/*"]] }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" }, "/all/*"]] }
+              ]
+            },
+            {
+              "Action": ["s3:ListBucket"],
+              "Effect": "Allow",
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "PodbayBucket" } ]] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "PodbayKey": {
+      "Type" : "AWS::KMS::Key",
+      "Properties" : {
+        "Description": { "Fn::Join": [" ", ["Used as the master key for encrypting files in the Podbay bucket for", { "Ref": "AWS::StackName" }]] },
+        "Enabled": true,
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Allow administration of the key",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::Join": [":", ["arn:aws:iam:", { "Ref": "AWS::AccountId" }, { "Ref": "AdminPath" }]] } },
+              "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:GenerateDataKey"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "Allow full use of the key by clients",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::GetAtt": ["PodbayClientRole", "Arn"] } },
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "Allow full use of the key by servers",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::GetAtt": ["PodbayServerRole", "Arn"] } },
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "ConfigBucket": {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "AccessControl" : "Private"
+      }
+    },
+    "ConfigKey": {
+      "Type" : "AWS::KMS::Key",
+      "Properties" : {
+        "Description": { "Fn::Join": [" ", ["Used as the master key for encrypting config files in the config bucket for", { "Ref": "AWS::StackName" }]] },
+        "Enabled": true,
+        "EnableKeyRotation": true,
+        "KeyPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Allow administration of the key",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::Join": [":", ["arn:aws:iam:", { "Ref": "AWS::AccountId" }, { "Ref": "AdminPath" }]] } },
+              "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+                "kms:GenerateDataKey"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "Allow decryption using the key by clients",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::GetAtt": ["PodbayClientRole", "Arn"] } },
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "Allow full use of the key by servers",
+              "Effect": "Allow",
+              "Principal": { "AWS": { "Fn::GetAtt": ["PodbayServerRole", "Arn"] } },
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "EC2DescribePolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "ec2:Describe*",
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "ConfigBucketReadPolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "ConfigBucket" }, "/*"]] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "ConfigBucketWritePolicy": {
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:Put*"
+              ],
+              "Resource": [
+                { "Fn::Join": ["", ["arn:aws:s3:::", { "Ref": "ConfigBucket" }, "/*"]] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "PodbayClientRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          { "Ref": "EC2DescribePolicy" },
+          { "Ref": "ConfigBucketReadPolicy" },
+          { "Ref": "PodbayBucketClientPolicy" }
+        ],
+        "Path": "/"
+      }
+    },
+    "PodbayServerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          { "Ref": "EC2DescribePolicy" },
+          { "Ref": "ConfigBucketReadPolicy" },
+          { "Ref": "ConfigBucketWritePolicy" }
+        ],
+        "Path": "/"
+      }
+    },
+    "PodbayClientInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ { "Ref": "PodbayClientRole" } ]
+      }
+    },
+    "PodbayServerInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ { "Ref": "PodbayServerRole" } ]
+      }
+    }
+  }
+}

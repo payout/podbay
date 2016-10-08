@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'podbay'
+response = Podbay::CLI.run_component_command(Podbay::CLI::Arguments.new(ARGV))
+
+case response
+when String
+  puts response
+when Hash
+  puts JSON.pretty_generate(response)
+end
